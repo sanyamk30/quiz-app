@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import './Ques.css';
 
 const Ques = ({quesNo,id,details,rightAns,previousButton,nextButton}) => {
 
@@ -37,8 +38,8 @@ const Ques = ({quesNo,id,details,rightAns,previousButton,nextButton}) => {
                         return <><p key={details.id}><input type="checkbox" name={details.answers[key]} value={details.correct_answers[`${key}_correct`]} />{details.answers[key]}</p></>;
                     else return <></>
                 })}
-                {quesNo !== 0 && <button onClick={handlePreviousClick}>Previous</button>}
-                {quesNo !== 9 && <button onClick={handleNextClick}>Next</button>}
+                {quesNo !== 0 && <button className="previous" onClick={handlePreviousClick}>Previous</button>}
+                {quesNo !== 9 && <button className="next" onClick={handleNextClick}>Next</button>}
                 
             </div>
         </>

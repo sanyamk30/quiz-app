@@ -1,5 +1,6 @@
 import React, {useState,useEffect,useRef } from 'react';
 import Ques from './Ques';
+import './Quiz.css';
 
 const API_token = 'SZ1Y8cLXDrSQjPEF0eWei8DJYT6Qu4pedzZ5axH6';
 const url = `https://quizapi.io/api/v1/questions?apiKey=${API_token}&limit=10`;
@@ -41,9 +42,9 @@ const Quiz = () => {
 
     return (
         <>
-            <Ques quesNo={quesNo} id={quesNo} details={data[quesNo]} rightAns={rightAns} previousButton={previousButton} nextButton={nextButton} />
-            { quesNo === 9 && <button onClick={handleSubmit}>Submit</button>}
-            {submitted && <div>{score.current}</div>}
+            {!submitted && <Ques quesNo={quesNo} id={quesNo} details={data[quesNo]} rightAns={rightAns} previousButton={previousButton} nextButton={nextButton} />}
+            { quesNo === 9 && <button className="submit" onClick={handleSubmit}>Submit</button>}
+            {submitted && <div className="score">Your final score is {score.current}</div>}
         </>
     );
 }
