@@ -1,6 +1,4 @@
-import React, {useState,useEffect,useRef } from 'react';
-import Ques from './Ques';
-import './Quiz.css';
+import React, {useState,useEffect } from 'react';
 
 const API_token = 'SZ1Y8cLXDrSQjPEF0eWei8DJYT6Qu4pedzZ5axH6';
 const url = `https://quizapi.io/api/v1/questions?apiKey=${API_token}&limit=10`;
@@ -9,44 +7,202 @@ const url = `https://quizapi.io/api/v1/questions?apiKey=${API_token}&limit=10`;
 
 const Quiz = () => {
 
+    const [questions,setQuestions] = useState([]);
+    //const questions = [{"id":1036,"question":"Which command will you use to check your Ansible version?","description":null,"answers":{"answer_a":"ansible-ctl --version","answer_b":"ansible --version","answer_c":"ansible v","answer_d":"ansiblectl v","answer_e":null,"answer_f":null},"multiple_correct_answers":"false","correct_answers":{"answer_a_correct":"false","answer_b_correct":"true","answer_c_correct":"false","answer_d_correct":"false","answer_e_correct":"false","answer_f_correct":"false"},"correct_answer":"answer_a","explanation":null,"tip":null,"tags":[{"name":"DevOps"}],"category":"DevOps","difficulty":"Easy"},{"id":705,"question":"Deployment Controllers are part of","description":null,"answers":{"answer_a":"Master Controller Manager","answer_b":"kube-scheduler","answer_c":"etcd manager","answer_d":"API Controller Manager","answer_e":null,"answer_f":null},"multiple_correct_answers":"false","correct_answers":{"answer_a_correct":"true","answer_b_correct":"false","answer_c_correct":"false","answer_d_correct":"false","answer_e_correct":"false","answer_f_correct":"false"},"correct_answer":"answer_a","explanation":"A Deployment provides declarative updates for Pods and ReplicaSets.You describe a desired state in a Deployment, and the Deployment Controller changes the actual state to the desired state at a controlled rate. You can define Deployments to create new ReplicaSets, or to remove existing Deployments and adopt all their resources with new Deployments.","tip":null,"tags":[{"name":"Kubernetes"}],"category":"Linux","difficulty":"Easy"},{"id":824,"question":"test123","description":null,"answers":{"answer_a":"test","answer_b":"test2","answer_c":null,"answer_d":null,"answer_e":null,"answer_f":null},"multiple_correct_answers":"false","correct_answers":{"answer_a_correct":"true","answer_b_correct":"false","answer_c_correct":"false","answer_d_correct":"false","answer_e_correct":"false","answer_f_correct":"false"},"correct_answer":null,"explanation":null,"tip":null,"tags":[{"name":"Angular"}],"category":"Linux","difficulty":"Easy"},{"id":289,"question":"How many types of plans are available in wordpress by default?","description":null,"answers":{"answer_a":"4","answer_b":"6","answer_c":"2","answer_d":"3","answer_e":null,"answer_f":null},"multiple_correct_answers":"false","correct_answers":{"answer_a_correct":"true","answer_b_correct":"false","answer_c_correct":"false","answer_d_correct":"false","answer_e_correct":"false","answer_f_correct":"false"},"correct_answer":"answer_a","explanation":null,"tip":null,"tags":[{"name":"WordPress"}],"category":"CMS","difficulty":"Medium"},{"id":1060,"question":"Which of the following are true for routes in Laravel?","description":null,"answers":{"answer_a":"You can not pass any arguments to your routes.","answer_b":"Routes can point to a method on a controller and also dictate which HTTP methods are able to hit that URI.","answer_c":"A route is an endpoint specified by a URI (Uniform Resource Identifier).","answer_d":"Routes can only handle GET requests","answer_e":null,"answer_f":null},"multiple_correct_answers":"false","correct_answers":{"answer_a_correct":"false","answer_b_correct":"true","answer_c_correct":"true","answer_d_correct":"false","answer_e_correct":"false","answer_f_correct":"false"},"correct_answer":"answer_a","explanation":null,"tip":null,"tags":[{"name":"Laravel"}],"category":"Code","difficulty":"Easy"},{"id":250,"question":"Which type you will select if you need to store binary data?","description":null,"answers":{"answer_a":"BLOB","answer_b":"BIGINT","answer_c":"INT","answer_d":"None of the above","answer_e":"Both BIGINT and INT","answer_f":null},"multiple_correct_answers":"false","correct_answers":{"answer_a_correct":"true","answer_b_correct":"false","answer_c_correct":"false","answer_d_correct":"false","answer_e_correct":"false","answer_f_correct":"false"},"correct_answer":"answer_a","explanation":null,"tip":null,"tags":[{"name":"MySQL"}],"category":"SQL","difficulty":"Medium"},{"id":599,"question":"How are objects in PHP passed by?","description":null,"answers":{"answer_a":"Objects are passed by value.","answer_b":"Objects are passed by reference.","answer_c":"Neither of the mentioned","answer_d":null,"answer_e":null,"answer_f":null},"multiple_correct_answers":"false","correct_answers":{"answer_a_correct":"false","answer_b_correct":"true","answer_c_correct":"false","answer_d_correct":"false","answer_e_correct":"false","answer_f_correct":"false"},"correct_answer":"answer_a","explanation":null,"tip":null,"tags":[{"name":"PHP"}],"category":"Code","difficulty":"Easy"},{"id":467,"question":"What type of a language is HTML?","description":null,"answers":{"answer_a":"Scripting Language","answer_b":"Markup Language","answer_c":"Programming Language","answer_d":"Network Protocol","answer_e":null,"answer_f":null},"multiple_correct_answers":"false","correct_answers":{"answer_a_correct":"false","answer_b_correct":"true","answer_c_correct":"false","answer_d_correct":"false","answer_e_correct":"false","answer_f_correct":"false"},"correct_answer":"answer_a","explanation":null,"tip":null,"tags":[{"name":"HTML"}],"category":"Code","difficulty":"Easy"},{"id":938,"question":"Kubernetes Manifests can be in JSON or YAML format","description":null,"answers":{"answer_a":"True","answer_b":"False","answer_c":null,"answer_d":null,"answer_e":null,"answer_f":null},"multiple_correct_answers":"false","correct_answers":{"answer_a_correct":"true","answer_b_correct":"false","answer_c_correct":"false","answer_d_correct":"false","answer_e_correct":"false","answer_f_correct":"false"},"correct_answer":null,"explanation":null,"tip":"not good","tags":[{"name":"Kubernetes"}],"category":"DevOps","difficulty":"Medium"},{"id":819,"question":"Can a Docker container restart by itself?","description":null,"answers":{"answer_a":"True","answer_b":"False","answer_c":null,"answer_d":null,"answer_e":null,"answer_f":null},"multiple_correct_answers":"false","correct_answers":{"answer_a_correct":"true","answer_b_correct":"false","answer_c_correct":"false","answer_d_correct":"false","answer_e_correct":"false","answer_f_correct":"false"},"correct_answer":null,"explanation":null,"tip":null,"tags":[{"name":"Docker"}],"category":"Docker","difficulty":"Medium"}]
     const [quesNo , setQuesNo] = useState(0);
-    const [data , setData] = useState([]);
-    const [submitted , setSubmitted] = useState(false);
-    const score = useRef(0);
+    const [showScore , setShowScore] = useState(false);
+    const [score,setScore] = useState(0);
+    const [options,setOptions] = useState({});
+    const [correctAnswers,setCorrectAnswers] = useState({});
+    const [userAnswers,setUserAnswers] = useState({});
+    const [timer,setTimer] = useState(10*60);
 
     useEffect(()=>{
         fetch(url)
             .then(response => response.json())
             .then(data => {
-                console.log(data);
-                setData(data);
+               // console.log(data);
+                setQuestions(data);
             });
-            console.log("Render");
     },[])
 
-    const rightAns = () => {
-       score.current += 1;
-    };
+    useEffect(() => {
+        extractOptions();
+        extractAnswers();
+        //console.log(questions);
+    },[questions])
+    useEffect(() => {
+        //extarctOptions();
+        if(timer > 0){
+            setTimeout(() => setTimer(timer - 1),1000);
+        }
+        else{
+            handleSubmit();
+        }
+    })
 
-    const previousButton = () => {
-        setQuesNo(quesNo - 1);
+    const extractOptions = () => {
+        //console.log('Hey');
+        let tempOptions = questions.map(question => {
+            let curr = [];
+            for(let key in question.answers){
+                //console.log()
+                if(question.answers[key] !== null){
+                    let item = [];
+                    item.push(question.answers[key]);
+                    item.push({checked: false});    
+                    //console.log(item);
+                    curr.push(item);
+                }
+            }
+            return curr;
+        });
+        //console.log(tempOptions);
+        setOptions(tempOptions);
+        //console.log(options);
     }
 
-    const nextButton = () =>{
-        setQuesNo(quesNo + 1);
+    const extractAnswers = () => {
+        let correctOptions = questions.map(question => {
+            let curr = [];
+            for(let key in question.correct_answers){
+                if(question.correct_answers[key] === "true")
+                    curr.push(key);
+            }
+            return curr;
+        })
+        //console.log(correctOptions);
+        let id = 0 ;
+        let tempAnswers={};
+        for(let question of questions){
+            let currQuesAns = [];
+            for(let key in question.answers){
+                //console.log(correctOptions[id]);
+                let temp = key + '_correct';
+                //console.log(correctOptions[id]);
+                //console.log(temp);
+                if(correctOptions[id].includes(temp)){
+                   // console.log('WUHU');
+                    //console.log(question.answers[])
+                    currQuesAns.push(question.answers[key]);
+                }
+            }
+           // console.log(currQuesAns);
+            tempAnswers[id] = currQuesAns;
+            id++;
+        }
+        setCorrectAnswers(tempAnswers);
+        //console.log(correctAnswers);
     }
 
-    const handleSubmit = () => {
-        setSubmitted(true);
+    const handleNextButtonClick = () =>{
+        const nextQues = quesNo + 1;
+        if(nextQues < 10)
+            setQuesNo(nextQues);
+    }
+    const handlePreviousButtonClick = () =>{
+        const prevQues = quesNo - 1;
+        if(prevQues >= 0)
+            setQuesNo(prevQues);
+    }
+
+    const handleOptionClick = (e) => {
+        const value = e.target.innerHTML;
+        //console.log(e);
+
+        let copy = userAnswers;
+        if(copy[quesNo] === undefined){
+            copy[quesNo] = [];
+        }
+        //console.log(userAnswers[quesNo]);
+        if(copy[quesNo].includes(value)){
+            // Deselect and remove
+           // e.target.classList.remove('selected');
+            let index = copy[quesNo].indexOf(value);
+            copy[quesNo].splice(index,1);
+        }
+        else{
+            // Select and push
+            //e.target.classList.add('selected');
+            copy[quesNo].push(value);
+        }
+        
+        setUserAnswers(copy);
+        //console.log(userAnswers);
+        //console.log(correctAnswers);
+
+        let copyOptions = options;
+
+        //console.log(copyOptions[quesNo]);
+        for(let option of copyOptions[quesNo]){
+           // console.log(option);
+            if(option[0] === value){
+               // console.log('found');
+                option[1].checked = !option[1].checked;
+            }
+        }
+        //console.log(options);
+        setOptions(copyOptions);
+        //console.log(options);
+
+    }
+
+    const handleSubmit = () =>{
+        let count = 0;
+        //console.log(userAnswers);
+        //console.log(correctAnswers);
+        for(let key in correctAnswers){
+            let areEqual = true;
+            if(userAnswers[key] !== undefined){
+                for(let item of correctAnswers[key]){
+                    if(!userAnswers[key].includes(item)){
+                        areEqual = false;
+                        break;
+                    }
+                }
+            }
+            if(areEqual)
+                count++;
+        }
+        setScore(count);
+        setShowScore(true);
     }
 
     return (
         <>
-            {!submitted && <Ques quesNo={quesNo} id={quesNo} details={data[quesNo]} rightAns={rightAns} previousButton={previousButton} nextButton={nextButton} />}
-            { quesNo === 9 && <button className="submit" onClick={handleSubmit}>Submit</button>}
-            {submitted && <div className="score">Your final score is {score.current}</div>}
+            <div className="timer-text">Time Left : {Math.floor(timer/60)}:{timer%60}</div>
+            {showScore ? (
+				<div className='score-section'>You scored {score} out of {questions.length}</div>
+			) : (
+				questions.length !== 0 ? <>
+                    <div className="question">
+                        <div className='question-section'>
+                            <div className='question-count'>
+                                <span>Question {quesNo + 1}</span>/{questions.length}
+                            </div>
+                            <div className='question-text'>{questions[quesNo].question}</div>
+                        </div>
+                        <div className='answer-section'>
+                            {options[quesNo] && options[quesNo].map((option,index) => {
+                                if(option[1].checked){ 
+                                    return (<button className="option-button selected" key={index} onClick={(e) => handleOptionClick(e)}>{option[0]}</button>)
+                                }
+                                else return (<button className="option-button" key={index} onClick={(e) => handleOptionClick(e)}>{option[0]}</button>)}
+                            )}
+                        </div>
+                    </div>
+                    <div className="navigation-section">
+                        <button className="previous-button" onClick={handlePreviousButtonClick}>{`<< Previous`}</button>
+                        <button className="next-button" onClick={handleNextButtonClick}>{`Next >>`}</button>
+                    </div>
+				</> : <></>
+			)}
+            {quesNo === 9 ? (<div className="submit-button-container">
+                    <button onClick={handleSubmit} className="submit-button">Submit quiz</button>
+                </div>) : <></>}
         </>
     );
 }
+// {Object.entries(questions[quesNo].answers).map(([key,value]) => {if(value) return <button className="option-button" key={key} onClick={(e) => handleOptionClick(e)}>{value}</button>})}
 
 export default Quiz;
