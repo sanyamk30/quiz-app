@@ -1,4 +1,4 @@
-import React, {useState,useEffect } from 'react';
+import React, {useState,useEffect,useMemo, useCallback } from 'react';
 
 const API_token = 'SZ1Y8cLXDrSQjPEF0eWei8DJYT6Qu4pedzZ5axH6';
 const url = `https://quizapi.io/api/v1/questions?apiKey=${API_token}&limit=10`;
@@ -12,88 +12,86 @@ const Quiz = () => {
     const [quesNo , setQuesNo] = useState(0);
     const [showScore , setShowScore] = useState(false);
     const [score,setScore] = useState(0);
-    const [options,setOptions] = useState({});
-    const [correctAnswers,setCorrectAnswers] = useState({});
+    //const [options,setOptions] = useState({});
+    //const [correctAnswers,setCorrectAnswers] = useState({});
     const [userAnswers,setUserAnswers] = useState({});
-    const [timer,setTimer] = useState(10*60);
+//    const [timer,setTimer] = useState(10*60);
 
     useEffect(()=>{
         fetch(url)
             .then(response => response.json())
             .then(data => {
                // console.log(data);
-                setQuestions(data);
+               const newData = data.map(item => {
+                   const optionArray = Object.values(item.answers).filter(item => item);
+
+                   item.options = optionArray;
+                   return item;
+               })
+                setQuestions(newData);
             });
     },[])
 
     useEffect(() => {
-        extractOptions();
-        extractAnswers();
-        //console.log(questions);
-    },[questions])
-    useEffect(() => {
-        //extarctOptions();
         if(timer > 0){
-            setTimeout(() => setTimer(timer - 1),1000);
+            setInterval(() => setTimer(timer - 1),1000);
         }
         else{
             handleSubmit();
         }
+        
     })
 
-    const extractOptions = () => {
-        //console.log('Hey');
-        let tempOptions = questions.map(question => {
-            let curr = [];
-            for(let key in question.answers){
-                //console.log()
-                if(question.answers[key] !== null){
-                    let item = [];
-                    item.push(question.answers[key]);
-                    item.push({checked: false});    
-                    //console.log(item);
-                    curr.push(item);
-                }
-            }
-            return curr;
-        });
-        //console.log(tempOptions);
-        setOptions(tempOptions);
-        //console.log(options);
-    }
+    // const extractOptions = useCallback(() => {
 
-    const extractAnswers = () => {
-        let correctOptions = questions.map(question => {
-            let curr = [];
-            for(let key in question.correct_answers){
-                if(question.correct_answers[key] === "true")
-                    curr.push(key);
-            }
-            return curr;
-        })
-        //console.log(correctOptions);
-        let id = 0 ;
-        let tempAnswers={};
-        for(let question of questions){
-            let currQuesAns = [];
-            for(let key in question.answers){
-                //console.log(correctOptions[id]);
-                let temp = key + '_correct';
-                //console.log(correctOptions[id]);
-                //console.log(temp);
-                if(correctOptions[id].includes(temp)){
-                   // console.log('WUHU');
-                    //console.log(question.answers[])
-                    currQuesAns.push(question.answers[key]);
-                }
-            }
-           // console.log(currQuesAns);
-            tempAnswers[id] = currQuesAns;
-            id++;
-        }
-        setCorrectAnswers(tempAnswers);
-        //console.log(correctAnswers);
-    }
+    //     let tempOptions = questions.map(question => {
+    //         let curr = [];
+    //         for(let key in question.answers){
+                
+    //             if(question.answers[key] !== null){
+    //                 let item = [];
+    //                 item.push(question.answers[key]);
+    //                 item.push({checked: false});    
+    //                 curr.push(item);
+    //             }
+    //         }
+    //         return curr;
+    //     });
+
+    //     //setOptions(tempOptions);
+        
+    // },[questions])
+
+    // const extractAnswers = useCallback(() => {
+    //     let correctOptions = questions.map(question => {
+    //         let curr = [];
+    //         for(let key in question.correct_answers){
+    //             if(question.correct_answers[key] === "true")
+    //                 curr.push(key);
+    //         }
+    //         return curr;
+    //     })
+        
+    //     let id = 0 ;
+    //     let tempAnswers={};
+    //     for(let question of questions){
+    //         let currQuesAns = [];
+    //         for(let key in question.answers){
+             
+    //             let temp = key + '_correct';
+    //             if(correctOptions[id].includes(temp)){
+    //                 currQuesAns.push(question.answers[key]);
+    //             }
+    //         }
+           
+    //         tempAnswers[id] = currQuesAns;
+    //         id++;
+    //     }
+    //     setCorrectAnswers(tempAnswers);
+    // },[questions])
+
+
+   
 
     const handleNextButtonClick = () =>{
         const nextQues = quesNo + 1;
@@ -107,70 +105,88 @@ const Quiz = () => {
     }
 
     const handleOptionClick = (e) => {
-        const value = e.target.innerHTML;
-        //console.log(e);
-
-        let copy = userAnswers;
-        if(copy[quesNo] === undefined){
-            copy[quesNo] = [];
-        }
-        //console.log(userAnswers[quesNo]);
-        if(copy[quesNo].includes(value)){
-            // Deselect and remove
-           // e.target.classList.remove('selected');
-            let index = copy[quesNo].indexOf(value);
-            copy[quesNo].splice(index,1);
-        }
-        else{
-            // Select and push
-            //e.target.classList.add('selected');
-            copy[quesNo].push(value);
-        }
+         const value = e.target.innerHTML;
         
-        setUserAnswers(copy);
-        //console.log(userAnswers);
-        //console.log(correctAnswers);
+        // let copy = {...userAnswers};
+        // if(copy[quesNo] === undefined){
+        //     copy[quesNo] = [];
+        // }
+     
+        // if(copy[quesNo].includes(value)){
+        //     let index = copy[quesNo].indexOf(value);
+        //     copy[quesNo].splice(index,1);
+        // }
+        // else{
+         
+        //     copy[quesNo].push(value);
+        // }
+        
+        // let copyOptions = {...options};
 
-        let copyOptions = options;
-
-        //console.log(copyOptions[quesNo]);
-        for(let option of copyOptions[quesNo]){
-           // console.log(option);
-            if(option[0] === value){
-               // console.log('found');
-                option[1].checked = !option[1].checked;
-            }
-        }
-        //console.log(options);
-        setOptions(copyOptions);
-        //console.log(options);
-
-    }
-
-    const handleSubmit = () =>{
-        let count = 0;
-        //console.log(userAnswers);
-        //console.log(correctAnswers);
-        for(let key in correctAnswers){
-            let areEqual = true;
-            if(userAnswers[key] !== undefined){
-                for(let item of correctAnswers[key]){
-                    if(!userAnswers[key].includes(item)){
-                        areEqual = false;
-                        break;
-                    }
+        // for(let option of copyOptions[quesNo]){
+      
+        //     if(option[0] === value){
+        //         option[1].checked = !option[1].checked;
+        //     }
+        // }
+        // debugger
+        //  setUserAnswers(copy);
+        // setOptions(copyOptions);
+        let copy = {...userAnswers};
+        if(copy[quesNo]){
+            if(copy[quesNo].includes(value)){
+                if(copy[quesNo].length == 1){
+                    delete copy[quesNo];
                 }
-            }
-            if(areEqual)
-                count++;
-        }
-        setScore(count);
-        setShowScore(true);
+                else{
+                    let index = copy[quesNo].indexOf(value);
+                    copy[quesNo].splice(index,1);
+                }
+            } 
+            else{
+                copy[quesNo].push(value);
+            }  
+        } 
+        else{
+            copy[quesNo] = [value];
+        }  
+        setUserAnswers(copy);
+
+
+
     }
+
+    // const handleSubmit = () =>{
+    //     let count = 0;
+        
+    //     for(let key in correctAnswers){
+    //         let areEqual = true;
+    //         if(userAnswers[key] !== undefined){
+    //             for(let item of correctAnswers[key]){
+    //                 if(!userAnswers[key].includes(item)){
+    //                     areEqual = false;
+    //                     break;
+    //                 }
+    //             }
+    //         }
+    //         if(areEqual)
+    //             count++;
+    //     }
+    //     setScore(count);
+    //     setShowScore(true);
+    // }
+
+
+    // useEffect(() => {
+    //     extractOptions();
+    //     extractAnswers();
+    //     //console.log(questions);
+    // },[extractOptions,extractAnswers])
+
 
     return (
         <>
-            <div className="timer-text">Time Left : {Math.floor(timer/60)}:{timer%60}</div>
+            {/* <div className="timer-text">Time Left : {Math.floor(timer/60)}:{timer%60}</div> */}
             {showScore ? (
 				<div className='score-section'>You scored {score} out of {questions.length}</div>
 			) : (
@@ -183,11 +199,11 @@ const Quiz = () => {
                             <div className='question-text'>{questions[quesNo].question}</div>
                         </div>
                         <div className='answer-section'>
-                            {options[quesNo] && options[quesNo].map((option,index) => {
-                                if(option[1].checked){ 
-                                    return (<button className="option-button selected" key={index} onClick={(e) => handleOptionClick(e)}>{option[0]}</button>)
+                            {questions?.[quesNo].options.map((option,index) => {
+                                if(userAnswers[quesNo]?.includes(option)){ 
+                                    return (<button className="option-button selected" key={index} onClick={(e) => handleOptionClick(e)}>{option}</button>)
                                 }
-                                else return (<button className="option-button" key={index} onClick={(e) => handleOptionClick(e)}>{option[0]}</button>)}
+                                else return (<button className="option-button" key={index} onClick={(e) => handleOptionClick(e)}>{option}</button>)}
                             )}
                         </div>
                     </div>
@@ -198,7 +214,7 @@ const Quiz = () => {
 				</> : <></>
 			)}
             {quesNo === 9 ? (<div className="submit-button-container">
-                    <button onClick={handleSubmit} className="submit-button">Submit quiz</button>
+                    {/* <button onClick={handleSubmit} className="submit-button">Submit quiz</button> */}
                 </div>) : <></>}
         </>
     );
